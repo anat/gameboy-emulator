@@ -4,9 +4,9 @@ GameBoy::GameBoy() : memory(Memory::GetInstance())
 {
 }
 
-void GameBoy::start(Buffer * romBuffer)
+void GameBoy::start(Buffer *romBuffer)
 {
-    this->gpu.start();
     this->memory->copyToMemory(romBuffer);
+    this->gpu.start();
     this->cpu.run();
 }

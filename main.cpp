@@ -1,22 +1,11 @@
 
 #include <iostream>
-
-#include "Buffer.h"
-
-
-
-#include "ROMLoader.h"
-
-
-#include "ROMHeader.h"
-
-#include "gameboy.h"
-
 #include <unistd.h>
 
-
-
-//JOKER
+#include "Buffer.h"
+#include "ROMLoader.h"
+#include "ROMHeader.h"
+#include "gameboy.h"
 
 int main(int ac, char **av)
 {

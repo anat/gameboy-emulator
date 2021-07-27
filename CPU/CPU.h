@@ -1,32 +1,29 @@
 #ifndef __CPU_H__
-# define __CPU_H__
+#define __CPU_H__
 
-# include <typeinfo>
-# include <stdint.h>
-# include <iomanip>
-# include "macro.h"
-# include "Memory.h"
-# include "Interruption.h"
-# include "ALU.h"
-# include "Loads.h"
-# include "Jumps.h"
-# include "BitInstruction.h"
-
+#include <typeinfo>
+#include <stdint.h>
+#include <iomanip>
+#include "macro.h"
+#include "Memory.h"
+#include "Interruption.h"
+#include "ALU.h"
+#include "Loads.h"
+#include "Jumps.h"
+#include "BitInstruction.h"
 
 using namespace std;
-
 
 class CPU;
 
 typedef void (CPU::*instruction)();
 
-class CPU : public ALU, public Loads, public Jumps, public Interruption, public BitInstruction
+class CPU : public ALU, public Loads, public Jumps, public Interruption//, public BitInstruction
 {
 private:
-    uint8_t * memory;
+    uint8_t *memory;
 
 public:
-
     instruction instructions[0xFF];
     CPU() : memory(Memory::GetInstance()->memory)
     {
@@ -45,7 +42,6 @@ public:
         this->instructions[0xcd] = &CPU::call1;
         this->instructions[0xc9] = &CPU::RET;
 
-
         this->instructions[0x10] = &CPU::STOP;
 
         // Register Loads
@@ -56,7 +52,6 @@ public:
         this->instructions[0x74] = &CPU::LDHLH;
         this->instructions[0x75] = &CPU::LDHLL;
         this->instructions[0x36] = &CPU::LDHLN;
-
 
         // Jumps
         this->instructions[0xc3] = &CPU::JP;
@@ -84,7 +79,6 @@ public:
 
         this->instructions[0x32] = &CPU::LDDHL;
         this->instructions[0x22] = &CPU::LDIHL;
-
 
         this->instructions[0x7f] = &CPU::LDAA;
         this->instructions[0x78] = &CPU::LDAB;
@@ -147,8 +141,6 @@ public:
 
         this->instructions[0x2a] = &CPU::LDIAHL;
 
-
-
         // Restarts
         /*
         this->instructions[0xc7] = &CPU::RST0;
@@ -161,8 +153,6 @@ public:
         this->instructions[0xff] = &CPU::RST38;
         */
 
-
-
         this->instructions[0x20] = &CPU::JR20;
 
         this->instructions[0x1f] = &CPU::RRA;
@@ -173,8 +163,6 @@ public:
         this->instructions[0xf0] = &CPU::LDDHAN;
 
         this->instructions[0x2f] = &CPU::CPL;
-
-
     }
 
     void initALU()
@@ -199,7 +187,6 @@ public:
         this->instructions[0x8d] = &CPU::ADDCAL;
         //this->instructions[0x8e] = &CPU::ADDCAHL;
         //this->instructions[0xce] = &CPU::ADDCAN;
-
 
         this->instructions[0x97] = &CPU::SUBAA;
         this->instructions[0x90] = &CPU::SUBAB;
@@ -270,8 +257,6 @@ public:
         this->instructions[0x2c] = &CPU::INCL;
         //this->instructions[0x34] = &CPU::INCHL;
 
-
-
         this->instructions[0x3d] = &CPU::DECA;
         this->instructions[0x05] = &CPU::DECB;
         this->instructions[0x0d] = &CPU::DECC;
@@ -303,7 +288,8 @@ public:
 
     void db()
     {
-        cpum(endl << "----------------------------------------------------------");
+        cpum(endl
+             << "----------------------------------------------------------");
         cpum("PC = " << PC);
         cpum("----------------------------------------------------------");
         for (int i = 0; i < 10; i++)
@@ -312,39 +298,33 @@ public:
             {
                 //cpum("J=" << j << " ")
                 cout << setfill('0') << setw(2) << hex << (short)memory[PC + j] << " ";
-            } cpum("");
+            }
+            cpum("");
         }
         cpum("----------------------------------------------------------");
     }
 
     void dbr()
     {
-        cpum("A = " << A <<
-                " B = " << B <<
-                " C = " << C <<
-                " D = " << D <<
-                " E = " << E <<
-                " H = " << H <<
-                " L = " << L <<
-                " Z = " << (int)Z)
+        cpum("A = " << A << " B = " << B << " C = " << C << " D = " << D << " E = " << E << " H = " << H << " L = " << L << " Z = " << (int)Z)
         // if (Z == 1) read(0, 0, 1);
     }
 
-
-
-    void nop() {INST PC += 1; cpum("nop") }
-
-
-
-    void pushHL() {INST
-        this->memory[--SP] = this->H;
-        this->memory[--SP] = this->L;
-        cpum("Push HL")
-        PC++;
+    void nop()
+    {
+        INST PC += 1;
+        cpum("nop")
     }
 
+    void pushHL()
+    {
+        INST this->memory[--SP] = this->H;
+        this->memory[--SP] = this->L;
+        cpum("Push HL")
+            PC++;
+    }
 
-/*
+    /*
     void RST0() {INST RST(0x00); }
     void RST8() {INST RST(0x08); }
     void RST10() {INST RST(0x10); }
@@ -355,15 +335,30 @@ public:
     void RST38() {INST RST(0x38); }
 */
 
-    void STOP() {INST PC++; std::cout << "STOP" << std::endl; }
-    void RST(uint8_t n) {INST PC++; return; SP -= 2; memory[SP] = PC; PC = n; }
+    void STOP()
+    {
+        INST PC++;
+        std::cout << "STOP" << std::endl;
+    }
+    void RST(uint8_t n)
+    {
+        INST PC++;
+        return;
+        SP -= 2;
+        memory[SP] = PC;
+        PC = n;
+    }
 
-
-
-    void RRA() {INST A >>= 1;
-                 A |= (this->CA << 7);
-                          if (!A) Z = 1; else Z = 0;
-                                   PC++;}
+    void RRA()
+    {
+        INST A >>= 1;
+        A |= (this->CA << 7);
+        if (!A)
+            Z = 1;
+        else
+            Z = 0;
+        PC++;
+    }
     void CPL()
     {
         setN();
@@ -371,6 +366,6 @@ public:
         A = ~A;
         PC++;
     }
-} __attribute__ ((packed));
+};// __attribute__((packed));
 
 #endif

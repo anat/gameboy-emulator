@@ -10,7 +10,8 @@ class BitInstruction : virtual public Register
 public:
     uint8_t* memory;
     BitInstruction() : memory(Memory::GetInstance()->memory) {}
-    void fetch();
+    template <typename T> void fetch();
+    template <typename T> T & getOperand();
 };
 
 #endif // BITINSTRUCTION_H

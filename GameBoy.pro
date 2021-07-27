@@ -3,6 +3,8 @@ QT += core
 TEMPLATE = app
 CONFIG += console
 CONFIG += qt
+CONFIG += c++11
+QMAKE_CXXFLAGS += -std=c++11
 
 INCLUDEPATH += ROM/ CPU/ GPU/
 

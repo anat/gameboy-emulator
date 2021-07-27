@@ -3,7 +3,7 @@
 template <typename T>
 void BitInstruction::fetch()
 {
-    T operand = getOperand();
+    T operand = this->getOperand<T>();
 
 
 

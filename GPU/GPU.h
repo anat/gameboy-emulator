@@ -11,9 +11,10 @@
 class GPU : public QThread
 {
 private:
-    uint8_t* memory;
-    sf::RenderWindow* window;
+    uint8_t *memory;
+    sf::RenderWindow *window;
     void run();
+
 public:
     GPU();
 };

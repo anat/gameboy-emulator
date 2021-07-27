@@ -21,14 +21,21 @@ void CPU::run()
             }
 
 
-           // sf::Sleep(0.0001);
-            cpum(std::hex << this->PC << setfill('0') << setw(2) << (int)this->memory[this->PC]);
+            //sf::sleep(sf::milliseconds(1));
+
+/* a way to check there is something written in GPU memory
+for (int i = 0x8000; i <= 0x8100; i += 16)
+        {
+            std::cout << (int)this->memory[i] << " ";
+        }*/
+
+            //cpum(std::hex << this->PC << setfill('0') << setw(2) << (int)this->memory[this->PC]);
 
             if (this->memory[this->PC] != 0xcb)
                 (this->*instructions[this->memory[this->PC]])();
             else
             {
-                this->fetch();
+                //this->fetch<>();
             }
 
             //if (c != 'c')
@@ -61,8 +68,8 @@ void CPU::run()
                     tiles++;
             }
             std::cout << "Tiles2 = " << tiles << std::endl;
-
 */
+
             /*
             if (i == 1000000)
             {
